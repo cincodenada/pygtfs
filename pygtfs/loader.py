@@ -73,7 +73,10 @@ def append_feed(schedule, feed_filename, strip_fields=True,
                 # Empty row.
                 continue
             try:
-                instance = gtfs_class(feed_id = feed_id, **record._asdict())
+                valid_cols = [c.key for c in gtfs_class.__table__.columns]
+                dir(record._asdict())
+                filtered_dict = {k: v for k, v in record._asdict().items() if k in valid_cols}
+                instance = gtfs_class(feed_id = feed_id, **filtered_dict)
             except:
                 print("Failure while writing {0}".format(record))
                 raise
